@@ -19,29 +19,29 @@
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
-    "next": "15.5.4",
+    "bcryptjs": "^3.0.2",
+    "next": "^15.5.26",
+    "nodemailer": "^7.0.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "zod": "^4.1.11",
-    "bcryptjs": "^3.0.2",
-    "nodemailer": "^7.0.6",
-    "resend": "^6.1.0"
+    "resend": "^6.1.0",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^24.5.2",
     "@types/nodemailer": "^7.0.1",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
-    "@types/bcryptjs": "^3.0.0",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.35.0",
+    "eslint-config-next": "^15.5.26",
+    "postcss": "^8.5.6",
+    "postcss-loader": "^8.2.0",
     "prisma": "^6.16.2",
     "tailwindcss": "^3.4.17",
-    "postcss": "^8.5.6",
-    "autoprefixer": "^10.4.21",
-    "postcss-loader": "^8.2.0",
-    "typescript": "^5.9.2",
     "tsx": "^4.20.5",
-    "vitest": "^3.2.4",
-    "eslint": "^9.35.0",
-    "eslint-config-next": "15.5.4"
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   }
 }
