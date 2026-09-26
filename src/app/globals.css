@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  /* Scroll-reveal: content must stay visible when motion is reduced */
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+body {
+  @apply bg-cream text-ink font-body antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid #1a7fe8;
+  outline-offset: 2px;
+}
+
+::selection {
+  background: #c2e3ff;
+  color: #102550;
+}
+
+/* ── Scroll-reveal primitives (IntersectionObserver toggles .is-visible) ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal-left { transform: translateX(-32px); }
+.reveal-right { transform: translateX(32px); }
+.reveal-zoom { transform: scale(0.95); }
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Underline that draws itself on reveal */
+.reveal-line {
+  background-image: linear-gradient(90deg, #3d9bf5, #0a66c2);
+  background-repeat: no-repeat;
+  background-size: 0% 3px;
+  background-position: left bottom;
+  transition: background-size 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+}
+.reveal.is-visible .reveal-line,
+.is-visible.reveal-line {
+  background-size: 100% 3px;
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-gold-500 text-white px-6 py-3 text-sm font-semibold transition-all duration-300 hover:bg-gold-600 hover:shadow-gold focus-visible:bg-gold-600 disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-gold-500 text-white px-6 py-3 text-sm font-semibold transition-all duration-300 hover:bg-gold-600 hover:shadow-gold disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-sand-300 bg-white px-6 py-3 text-sm font-semibold text-gold-600 transition-all duration-300 hover:border-gold-400 hover:text-gold-500 hover:bg-sea-100/60;
+  }
+  .btn-emerald {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 text-white px-6 py-3 text-sm font-semibold transition-all duration-300 hover:bg-emerald-600 hover:shadow-emerald disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  .kicker {
+    @apply text-xs font-semibold uppercase tracking-widest2 text-gold-600;
+  }
+  .card {
+    @apply rounded-xl border border-sand-200 bg-white shadow-card;
+  }
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 hover:border-gold-300;
+  }
+  .input {
+    @apply w-full rounded-lg border border-sand-300 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-muted/70 focus:border-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-300/40 transition-all;
+  }
+  .label {
+    @apply block text-xs font-semibold uppercase tracking-widest2 text-ink-muted mb-1.5;
+  }
+  .badge-demo {
+    @apply inline-block rounded border border-sand-300 bg-sand-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest2 text-ink-muted;
+  }
+  .badge-verify {
+    @apply inline-block rounded border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest2 text-amber-700;
+  }
+  .section-pad {
+    @apply px-5 sm:px-8 lg:px-16 xl:px-24 py-14 sm:py-20;
+  }
+  .section-title {
+    @apply font-display text-2xl sm:text-3xl font-bold;
+  }
+  .link-underline {
+    @apply relative after:absolute after:left-0 after:-bottom-0.5 after:h-0.5 after:w-0 after:rounded-full after:bg-gold-400 after:transition-all after:duration-300 hover:after:w-full;
+  }
+  /* Review-score pill (OTA style) */
+  .score-pill {
+    @apply inline-flex items-center justify-center rounded-lg bg-gold-600 px-2 py-1 text-sm font-bold text-white;
+  }
+  .price-big {
+    @apply font-display text-2xl font-bold text-ink;
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "zarina-hotels",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "prisma generate && next build",
+    "start": "next start -p 3001",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "admin:create": "tsx scripts/admin-create.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "next": "15.5.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^4.1.11",
+    "bcryptjs": "^3.0.2",
+    "nodemailer": "^7.0.6",
+    "resend": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "@types/nodemailer": "^7.0.1",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@types/bcryptjs": "^3.0.0",
+    "prisma": "^6.16.2",
+    "tailwindcss": "^3.4.17",
+    "postcss": "^8.5.6",
+    "autoprefixer": "^10.4.21",
+    "postcss-loader": "^8.2.0",
+    "typescript": "^5.9.2",
+    "tsx": "^4.20.5",
+    "vitest": "^3.2.4",
+    "eslint": "^9.35.0",
+    "eslint-config-next": "15.5.4"
+  }
+}

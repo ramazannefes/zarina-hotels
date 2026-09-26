@@ -1,0 +1,25 @@
+node_modules
+.next
+out
+build
+dist
+.env
+.env.local
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+coverage
+.DS_Store
+
+# Local dev database (contains demo seed data — never commit)
+prisma/*.db
+prisma/*.db-journal
+
+# Logs
+dev.log
+*.log
+npm-debug.log*
+
+# Vercel
+.vercel
+.freebuff/
