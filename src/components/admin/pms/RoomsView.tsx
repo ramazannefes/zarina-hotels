@@ -15,6 +15,8 @@ import { formatMoney } from "@/lib/money";
 import type { PhysicalRoomStatus, HousekeepingStatus } from "@prisma/client";
 import {
   createRoomAction,
+  updateRoomAction,
+  deleteRoomAction,
   setRoomStatusAction,
   setHousekeepingAction,
 } from "@/app/admin/pms/actions";
@@ -64,6 +66,7 @@ export default function RoomsView({ rows, hotels, roomTypes, floors, canManage, 
   const [search, setSearch] = useState("");
   const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
   const [showAddRoom, setShowAddRoom] = useState(false);
+  const [editingRoom, setEditingRoom] = useState<RoomRow | null>(null);
 
   const filtered = useMemo(
     () =>
@@ -238,6 +241,11 @@ export default function RoomsView({ rows, hotels, roomTypes, floors, canManage, 
                     Servise Al
                   </button>
                 )}
+                {canManage && (
+                  <button type="button" onClick={() => setEditingRoom(r)} className="rounded border border-gold-400 px-2 py-1 text-[11px] font-medium text-gold-600 hover:bg-sea-100/60">
+                    Düzenle
+                  </button>
+                )}
               </div>
             </article>
           ))}
@@ -249,19 +257,19 @@ export default function RoomsView({ rows, hotels, roomTypes, floors, canManage, 
       {view === "table" && (
         <div className="card mt-6 overflow-x-auto">
           <table className="w-full min-w-[980px] text-sm">
-            <thead>
-              <tr className="border-b border-sand-200 text-left text-xs uppercase tracking-widest2 text-ink-muted">
-                <th className="px-4 py-3">Oda</th>
-                <th className="px-4 py-3">Kat</th>
-                <th className="px-4 py-3">Tip</th>
-                <th className="px-4 py-3">Durum</th>
-                <th className="px-4 py-3">Temizlik</th>
-                <th className="px-4 py-3">Misafir</th>
-                <th className="px-4 py-3">Giriş → Çıkış</th>
-                <th className="px-4 py-3 text-right">Fiyat</th>
-                <th className="px-4 py-3 text-right">Tahsilat</th>
-                <th className="px-4 py-3 text-right">Cari</th>
-              </tr>
+            <thead>              <tr className="border-b border-sand-200 text-left text-xs uppercase tracking-widest2 text-ink-muted">
+              <th className="px-4 py-3">Oda</th>
+              <th className="px-4 py-3">Kat</th>
+              <th className="px-4 py-3">Tip</th>
+              <th className="px-4 py-3">Durum</th>
+              <th className="px-4 py-3">Temizlik</th>
+              <th className="px-4 py-3">Misafir</th>
+              <th className="px-4 py-3">Giriş → Çıkış</th>
+              <th className="px-4 py-3 text-right">Fiyat</th>
+              <th className="px-4 py-3 text-right">Tahsilat</th>
+              <th className="px-4 py-3 text-right">Cari</th>
+              {canManage && <th className="px-4 py-3 text-right">İşlem</th>}
+            </tr>
             </thead>
             <tbody className="divide-y divide-sand-200">
               {filtered.map((r) => (
@@ -286,9 +294,16 @@ export default function RoomsView({ rows, hotels, roomTypes, floors, canManage, 
                   <td className={`px-4 py-3 text-right ${r.balance > 0 ? "font-semibold text-red-600" : ""}`}>
                     {r.bookingId ? formatMoney(r.balance) : "—"}
                   </td>
+                  {canManage && (
+                    <td className="px-4 py-3 text-right">
+                      <button type="button" onClick={() => setEditingRoom(r)} className="text-xs font-medium text-gold-600 hover:underline">
+                        Düzenle
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
-              {filtered.length === 0 && <tr><td colSpan={10} className="px-4 py-10 text-center text-xs text-ink-muted">Filtreye uyan oda yok.</td></tr>}
+              {filtered.length === 0 && <tr><td colSpan={canManage ? 11 : 10} className="px-4 py-10 text-center text-xs text-ink-muted">Filtreye uyan oda yok.</td></tr>}
             </tbody>
           </table>
         </div>
@@ -338,6 +353,26 @@ export default function RoomsView({ rows, hotels, roomTypes, floors, canManage, 
           onError={(msg) => setMessage({ type: "err", text: msg })}
         />
       )}
+
+      {/* Oda düzenleme modalı */}
+      {editingRoom && (
+        <EditRoomModal
+          room={editingRoom}
+          roomTypes={roomTypes.filter((rt) => rt.hotelId === editingRoom.hotelId)}
+          onClose={() => setEditingRoom(null)}
+          onSaved={(msg) => {
+            setEditingRoom(null);
+            setMessage({ type: "ok", text: msg });
+            startTransition(() => router.refresh());
+          }}
+          onDeleted={(msg) => {
+            setEditingRoom(null);
+            setMessage({ type: "ok", text: msg });
+            startTransition(() => router.refresh());
+          }}
+          onError={(msg) => setMessage({ type: "err", text: msg })}
+        />
+      )}
     </div>
   );
 }
@@ -354,6 +389,123 @@ function Detail({ label, value }: { label: string; value: string }) {
 function fmtDate(d: string | null): string {
   if (!d) return "—";
   return `${d.slice(8)}.${d.slice(5, 7)}.${d.slice(0, 4)}`;
+}
+
+function EditRoomModal({
+  room,
+  roomTypes,
+  onClose,
+  onSaved,
+  onDeleted,
+  onError,
+}: {
+  room: RoomRow;
+  roomTypes: { id: string; name: string; hotelId: string; maxGuests: number; basePrice: number }[];
+  onClose: () => void;
+  onSaved: (msg: string) => void;
+  onDeleted: (msg: string) => void;
+  onError: (msg: string) => void;
+}) {
+  const [number, setNumber] = useState(room.number);
+  const [floor, setFloor] = useState(room.floor);
+  const [roomTypeId, setRoomTypeId] = useState("");
+  const [notes, setNotes] = useState(room.notes ?? "");
+  const [isActive, setIsActive] = useState(room.isActive);
+  const [busy, setBusy] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const typeLabel = (id: string) => roomTypes.find((rt) => rt.id === id)?.name ?? "?";
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    const res = await updateRoomAction({
+      id: room.id,
+      number,
+      floor,
+      ...(roomTypeId ? { roomTypeId } : {}),
+      notes: notes || undefined,
+      isActive,
+    });
+    setBusy(false);
+    if (!res.ok) {
+      onError(res.message);
+      return;
+    }
+    onSaved(`${number.toUpperCase()} odası güncellendi.`);
+  }
+
+  async function remove(hard: boolean) {
+    setBusy(true);
+    const res = await deleteRoomAction({ id: room.id, hard });
+    setBusy(false);
+    if (!res.ok) {
+      onError(res.message);
+      setConfirmDelete(false);
+      return;
+    }
+    onDeleted(hard ? `${room.number} odası kalıcı olarak silindi.` : `${room.number} odası pasife alındı.`);
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" role="dialog" aria-modal="true" aria-label="Oda düzenle">
+      <form onSubmit={save} className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-xl bg-white p-6 shadow-lift">
+        <h2 className="font-display text-xl">Oda {room.number} — Düzenle</h2>
+        <div className="mt-4 space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label htmlFor="er-number" className="label">Oda No</label>
+              <input id="er-number" value={number} onChange={(e) => setNumber(e.target.value)} className="input" required maxLength={10} />
+            </div>
+            <div>
+              <label htmlFor="er-floor" className="label">Kat</label>
+              <input id="er-floor" type="number" value={floor} onChange={(e) => setFloor(Number(e.target.value))} className="input" min={-2} max={50} />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="er-type" className="label">Oda Tipi</label>
+            <select id="er-type" value={roomTypeId || ""} onChange={(e) => setRoomTypeId(e.target.value)} className="input">
+              <option value="">Değiştirme ({typeLabel("__current__") === "?" ? "mevcut tip" : ""})</option>
+              {roomTypes.map((rt) => (
+                <option key={rt.id} value={rt.id}>{rt.name} ({rt.maxGuests} kişi, {formatMoney(rt.basePrice)})</option>
+              ))}
+            </select>
+            {!roomTypeId && <p className="mt-1 text-[11px] text-ink-muted">Tip değişmezse mevcut atama korunur.</p>}
+          </div>
+          <div>
+            <label htmlFor="er-notes" className="label">Not</label>
+            <textarea id="er-notes" value={notes} onChange={(e) => setNotes(e.target.value)} className="input min-h-16" maxLength={500} />
+          </div>
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} className="h-4 w-4" />
+            Oda aktif (satışta/listede görünsün)
+          </label>
+        </div>
+
+        <div className="mt-5 flex justify-between gap-2">
+          {!confirmDelete ? (
+            <button type="button" onClick={() => setConfirmDelete(true)} className="rounded-lg border border-red-300 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50">
+              Kaldır…
+            </button>
+          ) : (
+            <span className="flex items-center gap-1">
+              <button type="button" disabled={busy} onClick={() => remove(false)} className="rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-2 text-[11px] font-medium text-amber-700 hover:bg-amber-100">
+                Pasife Al
+              </button>
+              <button type="button" disabled={busy} onClick={() => remove(true)} className="rounded-lg border border-red-300 bg-red-50 px-2.5 py-2 text-[11px] font-medium text-red-700 hover:bg-red-100">
+                Kalıcı Sil
+              </button>
+              <button type="button" onClick={() => setConfirmDelete(false)} className="px-1.5 py-2 text-[11px] text-ink-muted underline">vazgeç</button>
+            </span>
+          )}
+          <span className="flex gap-2">
+            <button type="button" onClick={onClose} className="btn-ghost !px-4 !py-2 text-xs">İptal</button>
+            <button type="submit" disabled={busy} className="btn-primary !px-4 !py-2 text-xs">{busy ? "Kaydediliyor…" : "Kaydet"}</button>
+          </span>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 function AddRoomModal({

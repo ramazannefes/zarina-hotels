@@ -94,19 +94,82 @@ export async function createRoomAction(input: unknown): Promise<ActionResult & {
   });
 }
 
-export async function updateRoomAction(input: {
-  id: string;
-  number?: string;
-  floor?: number;
-  roomTypeId?: string;
-  notes?: string;
-  isActive?: boolean;
-}): Promise<ActionResult> {
+const roomUpdateSchema = z.object({
+  id: z.string().min(1),
+  number: z.string().trim().min(1).max(10).optional(),
+  floor: z.number().int().min(-2).max(50).optional(),
+  roomTypeId: z.string().min(1).optional(),
+  notes: z.string().trim().max(500).optional(),
+  isActive: z.boolean().optional(),
+});
+
+export async function updateRoomAction(input: unknown): Promise<ActionResult> {
   return run(async () => {
-    await requirePms("pms.rooms.manage");
-    const { id, ...rest } = input;
+    const { adminId, ip } = await requirePms("pms.rooms.manage");
+    const data = roomUpdateSchema.parse(input);
+    const { id, ...rest } = data;
+
+    const room = await db.room.findUnique({ where: { id } });
+    if (!room) return { ok: false as const, message: "Oda bulunamadı." };
+
+    // Oda tipi aynı otelden mi? (çapraz otel atamasını engelle)
+    if (rest.roomTypeId) {
+      const roomType = await db.roomType.findUnique({ where: { id: rest.roomTypeId } });
+      if (!roomType || roomType.hotelId !== room.hotelId) {
+        return { ok: false as const, message: "Seçilen oda tipi bu otale ait değil." };
+      }
+    }
+
+    // Oda numarası benzersiz mi? (aynı otelde başka odada kullanılıyor mu)
+    if (rest.number) {
+      const number = rest.number.toUpperCase();
+      const clash = await db.room.findFirst({
+        where: { hotelId: room.hotelId, number, id: { not: id } },
+      });
+      if (clash) {
+        return { ok: false as const, message: `"${number}" numaralı oda zaten kayıtlı.` };
+      }
+      rest.number = number;
+    }
+
     await db.room.update({ where: { id }, data: rest });
+    await import("@/lib/audit").then((m) =>
+      m.audit({ adminId, action: "UPDATE", entity: "Room", entityId: id, metadata: { ...rest }, ip }),
+    );
     revalidatePath("/admin/pms/rooms");
+    revalidatePath("/admin/pms");
+    return { ok: true as const };
+  });
+}
+
+export async function deleteRoomAction(input: { id: string; hard?: boolean }): Promise<ActionResult> {
+  return run(async () => {
+    const { adminId, ip } = await requirePms("pms.rooms.manage");
+    const { id, hard } = z.object({ id: z.string().min(1), hard: z.boolean().optional() }).parse(input);
+
+    const room = await db.room.findUnique({
+      where: { id },
+      include: { assignments: { where: { isActive: true } } },
+    });
+    if (!room) return { ok: false as const, message: "Oda bulunamadı." };
+    if (room.assignments.length > 0) {
+      return { ok: false as const, message: "Odada aktif rezervasyon var; önce rezervasyonu taşıyın veya iptal edin." };
+    }
+
+    if (hard) {
+      // Kalıcı silme: geçmiş atamalar SetNull değil Cascade — geçmişi korumak için
+      // aktif ataması olmayan odada atamalar bırakılır, loglar kalır.
+      await db.roomAssignment.deleteMany({ where: { roomId: id, isActive: false } });
+      await db.housekeepingTask.deleteMany({ where: { roomId: id } });
+      await db.room.delete({ where: { id } });
+    } else {
+      await db.room.update({ where: { id }, data: { isActive: false } });
+    }
+    await import("@/lib/audit").then((m) =>
+      m.audit({ adminId, action: "DELETE", entity: "Room", entityId: id, metadata: { number: room.number, hard: hard ?? false }, ip }),
+    );
+    revalidatePath("/admin/pms/rooms");
+    revalidatePath("/admin/pms");
     return { ok: true as const };
   });
 }
