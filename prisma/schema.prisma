@@ -23,12 +23,14 @@ enum AdminRole {
   CONTENT_MANAGER
   FINANCE
   RECEPTION
+  HOUSEKEEPING
 }
 
 enum BookingStatus {
   DRAFT
   HOLDING
   PENDING_PAYMENT
+  PMS_HOLD
   CONFIRMED
   CHECKED_IN
   CHECKED_OUT
@@ -52,6 +54,7 @@ enum PaymentProvider {
   BOG
   TBC
   STRIPE
+  MANUAL
 }
 
 enum RatePlanType {
@@ -146,6 +149,7 @@ model AdminUser {
   passwordResets  AdminPasswordReset[]
   auditLogs       AuditLog[]
   managedHotels   AdminHotel[]
+  roomStatusLogs  RoomStatusLog[]
 
   @@index([email])
 }
@@ -222,6 +226,7 @@ model Hotel {
   managerLinks   AdminHotel[]
   bookings       Booking[]
   promotions     Promotion[]
+  physicalRooms  Room[]
 
   @@index([city])
   @@index([isActive])
@@ -420,6 +425,7 @@ model RoomType {
   ratePlans    RatePlan[]
   bookingRooms BookingRoom[]
   dailyRates   DailyRate[]
+  physicalRooms Room[]
 
   @@unique([hotelId, code])
   @@index([hotelId, isActive])
@@ -538,6 +544,8 @@ model Booking {
   promoUsages PromotionUsage[]
   payments   Payment[]
   emails     EmailLog[]
+  roomAssignments  RoomAssignment[]
+  housekeepingTasks HousekeepingTask[]
 
   @@index([hotelId, status])
   @@index([checkIn])
@@ -587,6 +595,8 @@ model Guest {
   city       String?
   address    String?
   passportLast4 String? // PII minimization: only last 4 digits if needed
+  pmsProfileId String?
+  pmsProfile   GuestProfile? @relation(fields: [pmsProfileId], references: [id])
   isDemo     Boolean  @default(false)
 
   @@index([email])
@@ -660,6 +670,7 @@ model Payment {
   bookingId      String
   booking        Booking         @relation(fields: [bookingId], references: [id])
   provider       PaymentProvider @default(MOCK)
+  method         ManualPaymentMethod? // set for admin-recorded (manual) payments
   providerPaymentId String? // gateway transaction id
   idempotencyKey String          @unique
   amount         Decimal        
@@ -777,4 +788,145 @@ model Setting {
   key       String   @id
   value     String // JSON encoded
   updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// PMS — PHYSICAL ROOMS, ASSIGNMENTS, HOUSEKEEPING
+// ─────────────────────────────────────────────
+
+enum PhysicalRoomStatus {
+  FREE
+  RESERVED
+  OCCUPIED
+  AWAITING_CHECKIN
+  AWAITING_CHECKOUT
+  MAINTENANCE
+  BLOCKED
+}
+
+enum HousekeepingStatus {
+  CLEAN
+  DIRTY
+  IN_PROGRESS
+  CLEANING_PENDING
+  INSPECTION_PENDING
+}
+
+enum HousekeepingTaskStatus {
+  PENDING
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
+enum ManualPaymentMethod {
+  CASH
+  CREDIT_CARD
+  BANK_TRANSFER
+  WIRE
+  OTHER
+}
+
+// Physical room unit — PMS layer on top of the sales model (RoomType).
+model Room {
+  id            String   @id @default(cuid())
+  hotelId       String
+  hotel         Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  roomTypeId    String
+  roomType      RoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+  number        String // e.g. "101"
+  floor         Int      @default(1)
+  status        PhysicalRoomStatus @default(FREE)
+  housekeeping  HousekeepingStatus @default(CLEAN)
+  housekeepingNote String?
+  lastCleanedAt DateTime?
+  lastCleanedByAdminId String?
+  blockReason   String? // required for MAINTENANCE/BLOCKED
+  isActive      Boolean  @default(true)
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  assignments       RoomAssignment[]
+  housekeepingTasks HousekeepingTask[]
+  statusLogs        RoomStatusLog[]
+
+  @@unique([hotelId, number])
+  @@index([roomTypeId])
+  @@index([status])
+  @@index([housekeeping])
+}
+
+// Links a booking (or its booking-room line) to a physical room.
+model RoomAssignment {
+  id            String    @id @default(cuid())
+  bookingId     String
+  booking       Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingRoomId String?
+  roomId        String
+  room          Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  isActive      Boolean   @default(true)
+  releasedAt    DateTime?
+  notes         String?
+  createdAt     DateTime  @default(now())
+
+  @@index([bookingId])
+  @@index([roomId])
+  @@index([isActive])
+}
+
+model HousekeepingTask {
+  id          String                 @id @default(cuid())
+  roomId      String
+  room        Room                   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  bookingId   String?
+  booking     Booking?               @relation(fields: [bookingId], references: [id])
+  type        String                 @default("CLEANUP") // CLEANUP | INSPECTION | MAINTENANCE
+  status      HousekeepingTaskStatus @default(PENDING)
+  note        String?
+  assignedTo  String?
+  completedAt DateTime?
+  createdAt   DateTime               @default(now())
+
+  @@index([roomId])
+  @@index([status])
+}
+
+// Manual override / transition history for a physical room.
+model RoomStatusLog {
+  id               String              @id @default(cuid())
+  roomId           String
+  room             Room                @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  adminId          String?
+  admin            AdminUser?          @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  fromStatus       PhysicalRoomStatus?
+  toStatus         PhysicalRoomStatus
+  fromHousekeeping HousekeepingStatus?
+  toHousekeeping   HousekeepingStatus
+  note             String?
+  createdAt        DateTime            @default(now())
+
+  @@index([roomId])
+  @@index([createdAt])
+}
+
+// Reusable PMS guest profile (walk-in / phone guests without an online booking).
+model GuestProfile {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  firstName   String
+  lastName    String
+  phone       String?
+  identityNo  String? // TC / vergi no — PII minimization applies
+  nationality String?
+  birthDate   DateTime?
+  address     String?
+  notes       String?
+  isBlocked   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  guestRecords Guest[]
+
+  @@index([lastName])
 }

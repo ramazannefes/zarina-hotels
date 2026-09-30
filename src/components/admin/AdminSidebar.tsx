@@ -7,10 +7,16 @@ type Props = { role: string; roleLabel: string; name: string };
 
 const MENU: { href: string; label: string; roles?: string[] }[] = [
   { href: "/admin", label: "Dashboard" },
-  { href: "/admin/reservations", label: "Reservations" },
+  { href: "/admin/pms", label: "Otel Yönetimi" },
+  { href: "/admin/pms/rooms", label: "Odalar" },
+  { href: "/admin/pms/reservations", label: "Rezervasyonlar" },
+  { href: "/admin/pms/calendar", label: "Doluluk Takvimi" },
+  { href: "/admin/pms/guests", label: "Misafirler" },
+  { href: "/admin/pms/reports", label: "Raporlar", roles: ["SUPER_ADMIN", "HOTEL_MANAGER", "RESERVATION_MANAGER", "FINANCE"] },
+  { href: "/admin/reservations", label: "Online Reservations" },
   { href: "/admin/calendar", label: "Rates & Availability" },
   { href: "/admin/hotels", label: "Hotels" },
-  { href: "/admin/rooms", label: "Rooms" },
+  { href: "/admin/rooms", label: "Room Types" },
   { href: "/admin/promotions", label: "Offers & Promo" },
   { href: "/admin/content", label: "Content", roles: ["CONTENT_MANAGER", "SUPER_ADMIN", "HOTEL_MANAGER"] },
   { href: "/admin/reviews", label: "Reviews" },
