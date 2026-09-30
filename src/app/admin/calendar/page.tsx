@@ -57,15 +57,15 @@ export default async function AdminCalendarPage({
     <div className="p-6 lg:p-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="kicker">Rates & Availability</p>
-          <h1 className="mt-1 font-display text-3xl">Inventory calendar</h1>
+          <p className="kicker">Fiyat & Müsaitlik</p>
+          <h1 className="mt-1 font-display text-3xl">Stok Takvimi</h1>
         </div>
         <form action="/admin/calendar" className="flex items-end gap-2">
           <div>
-            <label htmlFor="start" className="label">Start date</label>
+            <label htmlFor="start" className="label">Başlangıç tarihi</label>
             <input id="start" name="start" type="date" defaultValue={startDate} className="input !py-2" />
           </div>
-          <button type="submit" className="btn-ghost !px-4 !py-2 text-xs">Go</button>
+          <button type="submit" className="btn-ghost !px-4 !py-2 text-xs">Git</button>
         </form>
       </div>
 

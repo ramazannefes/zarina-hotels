@@ -20,24 +20,21 @@ export default async function AdminHotelsPage() {
     <div className="p-6 lg:p-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="kicker">Properties</p>
-          <h1 className="mt-1 font-display text-3xl">Hotels</h1>
+          <p className="kicker">Tesisler</p>
+          <h1 className="mt-1 font-display text-3xl">Oteller</h1>
         </div>
-        {hasPermission(admin.role, "hotels.edit") && (
-          <Link href="/admin/hotels/new" className="btn-primary !px-4 !py-2 text-xs">+ New hotel</Link>
-        )}
       </div>
 
       <div className="card mt-6 overflow-x-auto">
         <table className="w-full min-w-[760px] text-sm">
           <thead>
             <tr className="border-b border-sand-200 text-left text-xs uppercase tracking-widest2 text-ink-muted">
-              <th className="px-4 py-3">Hotel</th>
-              <th className="px-4 py-3">City</th>
-              <th className="px-4 py-3">Rooms</th>
-              <th className="px-4 py-3">Bookings</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Data</th>
+              <th className="px-4 py-3">Otel</th>
+              <th className="px-4 py-3">Şehir</th>
+              <th className="px-4 py-3">Oda Tipleri</th>
+              <th className="px-4 py-3">Rezervasyonlar</th>
+              <th className="px-4 py-3">Durum</th>
+              <th className="px-4 py-3">Veri</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-sand-200">
@@ -52,7 +49,7 @@ export default async function AdminHotelsPage() {
                 <td className="px-4 py-3">{h._count.bookings}</td>
                 <td className="px-4 py-3">
                   <span className={`px-2 py-1 text-[10px] font-medium uppercase tracking-widest2 ${h.isActive ? "bg-green-50 text-green-800" : "bg-sand-100 text-ink-muted"}`}>
-                    {h.isActive ? "Active" : "Hidden"}
+                    {h.isActive ? "Aktif" : "Gizli"}
                   </span>
                 </td>
                 <td className="px-4 py-3">
@@ -61,7 +58,7 @@ export default async function AdminHotelsPage() {
                 </td>
               </tr>
             ))}
-            {hotels.length === 0 && <tr><td colSpan={6} className="px-4 py-10 text-center text-xs text-ink-muted">No hotels yet.</td></tr>}
+            {hotels.length === 0 && <tr><td colSpan={6} className="px-4 py-10 text-center text-xs text-ink-muted">Henüz otel yok.</td></tr>}
           </tbody>
         </table>
       </div>

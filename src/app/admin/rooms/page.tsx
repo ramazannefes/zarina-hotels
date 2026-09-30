@@ -18,20 +18,20 @@ export default async function AdminRoomsPage() {
 
   return (
     <div className="p-6 lg:p-10">
-      <p className="kicker">Inventory</p>
-      <h1 className="mt-1 font-display text-3xl">Room types</h1>
+      <p className="kicker">Envanter</p>
+      <h1 className="mt-1 font-display text-3xl">Oda Tipleri</h1>
 
       <div className="card mt-6 overflow-x-auto">
         <table className="w-full min-w-[860px] text-sm">
           <thead>
             <tr className="border-b border-sand-200 text-left text-xs uppercase tracking-widest2 text-ink-muted">
-              <th className="px-4 py-3">Room</th>
-              <th className="px-4 py-3">Hotel</th>
-              <th className="px-4 py-3">Code</th>
-              <th className="px-4 py-3">Max guests</th>
-              <th className="px-4 py-3">Base price</th>
-              <th className="px-4 py-3">Inventory</th>
-              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Oda</th>
+              <th className="px-4 py-3">Otel</th>
+              <th className="px-4 py-3">Kod</th>
+              <th className="px-4 py-3">Maks. Kişi</th>
+              <th className="px-4 py-3">Temel Fiyat</th>
+              <th className="px-4 py-3">Stok</th>
+              <th className="px-4 py-3">Durum</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-sand-200">
@@ -45,13 +45,13 @@ export default async function AdminRoomsPage() {
                 <td className="px-4 py-3">{r.inventoryCount}</td>
                 <td className="px-4 py-3">
                   <span className={`px-2 py-1 text-[10px] font-medium uppercase tracking-widest2 ${r.isActive ? "bg-green-50 text-green-800" : "bg-sand-100 text-ink-muted"}`}>
-                    {r.isActive ? "Active" : "Inactive"}
+                    {r.isActive ? "Aktif" : "Pasif"}
                   </span>
                   {r.isDemo && <span className="badge-demo ml-1">DEMO</span>}
                 </td>
               </tr>
             ))}
-            {rooms.length === 0 && <tr><td colSpan={7} className="px-4 py-10 text-center text-xs text-ink-muted">No rooms yet.</td></tr>}
+            {rooms.length === 0 && <tr><td colSpan={7} className="px-4 py-10 text-center text-xs text-ink-muted">Henüz oda tipi yok.</td></tr>}
           </tbody>
         </table>
       </div>

@@ -80,7 +80,7 @@ export default function CalendarGrid({ startDate, days, rooms, invMap, rateMap, 
             <tr key={room.id} className="border-b border-sand-100">
               <td className="sticky left-0 z-10 bg-white px-3 py-2">
                 <p className="font-medium">{room.name}</p>
-                <p className="text-[10px] text-ink-muted">{room.hotel} · inv {room.inventoryCount} · base ₾{room.basePrice}</p>
+                <p className="text-[10px] text-ink-muted">{room.hotel} · stok {room.inventoryCount} · taban ₾{room.basePrice}</p>
               </td>
               {dates.map((d) => {
                 const inv = invMap[`${room.id}|${d}`];
@@ -97,7 +97,7 @@ export default function CalendarGrid({ startDate, days, rooms, invMap, rateMap, 
                       setEditing(cellKey);
                       setPrice(String(displayPrice));
                     }}
-                    title={canEdit ? "Click to edit price" : undefined}
+                    title={canEdit ? "Fiyatı düzenlemek için tıklayın" : undefined}
                   >
                     {editing === cellKey ? (
                       <div className="flex items-center justify-center gap-1" onClick={(e) => e.stopPropagation()}>
@@ -108,14 +108,14 @@ export default function CalendarGrid({ startDate, days, rooms, invMap, rateMap, 
                           className="w-14 border border-gold-400 px-1 py-0.5 text-xs"
                           min={0}
                           step={1}
-                          aria-label="Daily price"
+                          aria-label="Günlük fiyat"
                         />
                         <button
                           type="button"
                           disabled={busy}
                           onClick={() => saveCell(cellKey, room.id, d, Number(price))}
                           className="bg-gold-400 px-1 text-[10px]"
-                          aria-label="Save price"
+                          aria-label="Fiyatı kaydet"
                         >
                           ✓
                         </button>
@@ -137,7 +137,7 @@ export default function CalendarGrid({ startDate, days, rooms, invMap, rateMap, 
         </tbody>
       </table>
       <div className="border-t border-sand-200 px-4 py-3 text-[11px] text-ink-muted">
-        Click a cell to edit the daily price. Red = sold out, amber = stop-sell. In-server validation applies; changes are audit-logged.
+        Günlük fiyatı düzenlemek için hücreye tıklayın. Kırmızı = tükendi, sarı = satış durduruldu. Doğrulama sunucuda yapılır; değişiklikler kayıt altına alınır.
       </div>
     </div>
   );

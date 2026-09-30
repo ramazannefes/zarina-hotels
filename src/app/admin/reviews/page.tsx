@@ -14,10 +14,10 @@ export default async function AdminReviewsPage() {
 
   return (
     <div className="p-6 lg:p-10">
-      <p className="kicker">Moderation</p>
-      <h1 className="mt-1 font-display text-3xl">Guest reviews</h1>
+      <p className="kicker">Moderasyon</p>
+      <h1 className="mt-1 font-display text-3xl">Misafir Yorumları</h1>
       <p className="mt-2 max-w-2xl text-sm text-ink-muted">
-        Only reviews verified and published by staff appear on the site. Record the source (e.g. transcribed from a public OTA review) and keep provenance.
+        Sitede yalnızca personel tarafından doğrulanmış ve yayınlanmış yorumlar görünür. Kaynağı kaydedin (ör. herkese açık OTA yorumundan aktarıldı) ve kaynak bilgisini koruyun.
       </p>
 
       <div className="mt-6 space-y-3">
@@ -30,18 +30,18 @@ export default async function AdminReviewsPage() {
               <div className="flex items-center gap-2 text-xs">
                 <span className="text-ink-muted">{r.hotel.name}</span>
                 <span className={`px-2 py-1 uppercase tracking-widest2 ${r.isPublished ? "bg-green-50 text-green-800" : "bg-sand-100 text-ink-muted"}`}>
-                  {r.isPublished ? "Published" : "Pending"}
+                  {r.isPublished ? "Yayında" : "Beklemede"}
                 </span>
               </div>
             </div>
             {r.title && <p className="mt-1 text-sm font-medium">{r.title}</p>}
             <p className="mt-1 text-sm text-ink-muted">{r.body}</p>
-            <p className="mt-2 text-[11px] text-ink-muted">Source: {r.source}{r.sourceRef ? ` · ${r.sourceRef}` : ""}</p>
+            <p className="mt-2 text-[11px] text-ink-muted">Kaynak: {r.source}{r.sourceRef ? ` · ${r.sourceRef}` : ""}</p>
           </article>
         ))}
         {reviews.length === 0 && (
           <p className="text-sm text-ink-muted">
-            No reviews recorded yet. Add verified guest feedback here — fake testimonials are never generated.
+            Henüz yorum kaydı yok. Doğrulanmış misafir geri bildirimlerini buraya ekleyin — asla sahte referans üretilmez.
           </p>
         )}
       </div>

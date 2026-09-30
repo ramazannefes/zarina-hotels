@@ -17,7 +17,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="flex min-h-screen bg-sand-50">
       {admin && <AdminSidebar role={admin.role as AdminRole} roleLabel={ROLE_LABELS[admin.role]} name={admin.name} />}
-      <div className="flex-1 overflow-x-hidden">{children}</div>
+      <div className="flex-1 overflow-x-hidden pt-[57px] lg:pt-0">{children}</div>
     </div>
   );
 }

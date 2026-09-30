@@ -14,20 +14,20 @@ export default async function AdminPromotionsPage() {
 
   return (
     <div className="p-6 lg:p-10">
-      <p className="kicker">Marketing</p>
-      <h1 className="mt-1 font-display text-3xl">Offers & promo codes</h1>
+      <p className="kicker">Pazarlama</p>
+      <h1 className="mt-1 font-display text-3xl">Kampanyalar & Promosyon Kodları</h1>
 
       <div className="card mt-6 overflow-x-auto">
         <table className="w-full min-w-[860px] text-sm">
           <thead>
             <tr className="border-b border-sand-200 text-left text-xs uppercase tracking-widest2 text-ink-muted">
-              <th className="px-4 py-3">Code</th>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Discount</th>
-              <th className="px-4 py-3">Min nights</th>
-              <th className="px-4 py-3">Usage</th>
-              <th className="px-4 py-3">Stay window</th>
-              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Kod</th>
+              <th className="px-4 py-3">Ad</th>
+              <th className="px-4 py-3">İndirim</th>
+              <th className="px-4 py-3">Min. Gece</th>
+              <th className="px-4 py-3">Kullanım</th>
+              <th className="px-4 py-3">Konaklama Aralığı</th>
+              <th className="px-4 py-3">Durum</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-sand-200">
@@ -43,18 +43,18 @@ export default async function AdminPromotionsPage() {
                 </td>
                 <td className="px-4 py-3">
                   <span className={`px-2 py-1 text-[10px] font-medium uppercase tracking-widest2 ${p.isActive ? "bg-green-50 text-green-800" : "bg-sand-100 text-ink-muted"}`}>
-                    {p.isActive ? "Active" : "Paused"}
+                    {p.isActive ? "Aktif" : "Duraklatıldı"}
                   </span>
                   {p.isDemo && <span className="badge-demo ml-1">DEMO</span>}
                 </td>
               </tr>
             ))}
-            {promos.length === 0 && <tr><td colSpan={7} className="px-4 py-10 text-center text-xs text-ink-muted">No promotions yet.</td></tr>}
+            {promos.length === 0 && <tr><td colSpan={7} className="px-4 py-10 text-center text-xs text-ink-muted">Henüz kampanya yok.</td></tr>}
           </tbody>
         </table>
       </div>
       <p className="mt-4 text-xs text-ink-muted">
-        Promo codes are validated server-side at booking creation — window, usage limit, property and room restrictions all enforced. Create/edit UI: next iteration.
+        Promosyon kodları rezervasyon oluşturulurken sunucu tarafında doğrulanır — tarih aralığı, kullanım limiti, otel ve oda kısıtları uygulanır. Oluşturma/düzenleme arayüzü: sonraki sürüm.
       </p>
     </div>
   );

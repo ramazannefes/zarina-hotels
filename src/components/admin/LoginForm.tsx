@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginAdmin } from "@/app/admin/actions";
+import { TR_COMMON } from "@/lib/admin-i18n";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -23,23 +24,23 @@ export default function LoginForm() {
       router.push("/admin");
       router.refresh();
     } else {
-      setError(res.error === "LOCKED" ? "Account temporarily locked. Try again later." : "Invalid email or password.");
+      setError(res.error === "LOCKED" ? TR_COMMON.accountLocked : TR_COMMON.invalidCredentials);
     }
   }
 
   return (
     <form onSubmit={submit} className="mt-8 space-y-4 border border-ink-soft bg-ink-soft/30 p-6">
       <div>
-        <label htmlFor="a-email" className="label !text-sand-200/70">Email</label>
+        <label htmlFor="a-email" className="label !text-sand-200/70">{TR_COMMON.email}</label>
         <input id="a-email" name="email" type="email" required autoComplete="username" className="input !border-ink-soft !bg-ink !text-cream" />
       </div>
       <div>
-        <label htmlFor="a-pass" className="label !text-sand-200/70">Password</label>
+        <label htmlFor="a-pass" className="label !text-sand-200/70">{TR_COMMON.password}</label>
         <input id="a-pass" name="password" type="password" required autoComplete="current-password" className="input !border-ink-soft !bg-ink !text-cream" />
       </div>
       {error && <p role="alert" className="border border-red-400/40 bg-red-500/10 px-3 py-2 text-sm text-red-300">{error}</p>}
       <button type="submit" disabled={busy} className="btn-gold w-full">
-        {busy ? "Signing in…" : "Sign in"}
+        {busy ? TR_COMMON.signingIn : TR_COMMON.signIn}
       </button>
     </form>
   );

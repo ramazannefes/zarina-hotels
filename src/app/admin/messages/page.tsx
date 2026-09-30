@@ -14,8 +14,8 @@ export default async function AdminMessagesPage() {
 
   return (
     <div className="p-6 lg:p-10">
-      <p className="kicker">Inbox</p>
-      <h1 className="mt-1 font-display text-3xl">Contact messages</h1>
+      <p className="kicker">Gelen Kutusu</p>
+      <h1 className="mt-1 font-display text-3xl">İletişim Mesajları</h1>
 
       <div className="mt-6 space-y-3">
         {messages.map((m) => (
@@ -30,7 +30,7 @@ export default async function AdminMessagesPage() {
             <p className="mt-1 text-sm leading-6 text-ink-muted">{m.message}</p>
           </article>
         ))}
-        {messages.length === 0 && <p className="text-sm text-ink-muted">No messages yet.</p>}
+        {messages.length === 0 && <p className="text-sm text-ink-muted">Henüz mesaj yok.</p>}
       </div>
     </div>
   );

@@ -1,0 +1,91 @@
+// Admin panel Turkish translations — single source of truth for TR UI text.
+// Both server pages and client components import from here (no server-only deps).
+
+export const TR_MENU: { href: string; label: string; roles?: string[] }[] = [
+  { href: "/admin", label: "Kontrol Paneli" },
+  { href: "/admin/pms", label: "Otel Yönetimi" },
+  { href: "/admin/pms/rooms", label: "Odalar" },
+  { href: "/admin/pms/reservations", label: "Rezervasyonlar" },
+  { href: "/admin/pms/calendar", label: "Doluluk Takvimi" },
+  { href: "/admin/pms/guests", label: "Misafirler" },
+  { href: "/admin/pms/reports", label: "Raporlar", roles: ["SUPER_ADMIN", "HOTEL_MANAGER", "RESERVATION_MANAGER", "FINANCE"] },
+  { href: "/admin/reservations", label: "Online Rezervasyonlar" },
+  { href: "/admin/calendar", label: "Fiyat & Müsaitlik" },
+  { href: "/admin/hotels", label: "Oteller" },
+  { href: "/admin/rooms", label: "Oda Tipleri" },
+  { href: "/admin/promotions", label: "Kampanyalar" },
+  { href: "/admin/content", label: "İçerik", roles: ["CONTENT_MANAGER", "SUPER_ADMIN", "HOTEL_MANAGER"] },
+  { href: "/admin/reviews", label: "Yorumlar" },
+  { href: "/admin/messages", label: "Mesajlar" },
+  { href: "/admin/analytics", label: "Analitik", roles: ["FINANCE", "SUPER_ADMIN", "HOTEL_MANAGER", "RESERVATION_MANAGER"] },
+  { href: "/admin/users", label: "Kullanıcılar & Roller", roles: ["SUPER_ADMIN"] },
+  { href: "/admin/audit", label: "İşlem Kayıtları", roles: ["SUPER_ADMIN", "FINANCE"] },
+  { href: "/admin/settings", label: "Ayarlar" },
+];
+
+export const TR_COMMON = {
+  signIn: "Giriş Yap",
+  signingIn: "Giriş yapılıyor…",
+  signOut: "Çıkış Yap",
+  viewSite: "Siteyi Görüntüle →",
+  email: "E-posta",
+  password: "Şifre",
+  search: "Ara",
+  filter: "Filtrele",
+  all: "Tümü",
+  prev: "← Önceki",
+  next: "Sonraki →",
+  noResults: "Kayıt bulunamadı.",
+  active: "Aktif",
+  inactive: "Pasif",
+  hidden: "Gizli",
+  never: "hiç",
+  authorizedOnly: "Yetkili personel girişi. Tüm erişim denemeleri kayıt altındadır.",
+  invalidCredentials: "E-posta veya şifre hatalı.",
+  accountLocked: "Hesap geçici olarak kilitlendi. Lütfen daha sonra tekrar deneyin.",
+  accessDeniedTitle: "Erişim Engellendi",
+  accessDeniedBody: "Rolünüz bu alan için yetki içermiyor. Hata olduğunu düşünüyorsanız Super Admin ile iletişime geçin.",
+  backToDashboard: "Panele Dön",
+  adminPortal: "Yönetim Paneli",
+} as const;
+
+export const TR_BOOKING_STATUS: Record<string, string> = {
+  DRAFT: "Taslak",
+  HOLDING: "Online (Beklemede)",
+  PENDING_PAYMENT: "Ödeme Bekliyor",
+  PMS_HOLD: "Bekliyor",
+  CONFIRMED: "Onaylandı",
+  CHECKED_IN: "Konaklıyor",
+  CHECKED_OUT: "Çıkış Yapıldı",
+  CANCELLED: "İptal",
+  NO_SHOW: "Gelmedi",
+  EXPIRED: "Süresi Doldu",
+};
+
+export const TR_PAYMENT_STATUS: Record<string, string> = {
+  PENDING: "Bekliyor",
+  AUTHORIZED: "Onaylandı",
+  PAID: "Tahsil Edildi",
+  FAILED: "Başarısız",
+  CANCELLED: "İptal",
+  PARTIALLY_REFUNDED: "Kısmi İade",
+  REFUNDED: "İade Edildi",
+};
+
+export const TR_ADMIN_LOG_ACTION: Record<string, string> = {
+  LOGIN: "Giriş",
+  LOGOUT: "Çıkış",
+  LOGIN_FAILED: "Başarısız Giriş",
+  CREATE: "Oluşturma",
+  UPDATE: "Güncelleme",
+  DELETE: "Silme",
+  BOOKING_MODIFY: "Rezervasyon Düzenleme",
+  BOOKING_CANCEL: "Rezervasyon İptali",
+  REFUND: "İade",
+  RATE_CHANGE: "Fiyat Değişikliği",
+  AVAILABILITY_CHANGE: "Müsaitlik Değişikliği",
+  USER_CREATE: "Kullanıcı Oluşturma",
+  ROLE_CHANGE: "Rol Değişikliği",
+  CONTENT_PUBLISH: "İçerik Yayını",
+  EXPORT: "Dışa Aktarım",
+};
