@@ -19,7 +19,8 @@ function buildRoomDefs(): { number: string; floor: number; typeCode: string }[] 
   for (let n = 301; n <= 311; n++) defs.push({ number: String(n), floor: 2, typeCode: "DBL-CMF" });
   for (let n = 401; n <= 414; n++) {
     const idx = n - 401;
-    const typeCode = idx < 4 ? "FAM-3" : idx < 6 ? "SGL-PRM" : idx < 10 ? "JST" : "FST";
+    // Comfort Triple (SGL-PRM) ×6 · Junior Suite ×4 · Family Suite ×4 (referans site planı)
+    const typeCode = idx < 6 ? "SGL-PRM" : idx < 10 ? "JST" : "FST";
     defs.push({ number: String(n), floor: 3, typeCode });
   }
   return defs;
