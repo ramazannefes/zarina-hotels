@@ -3,8 +3,8 @@ import type { Dictionary } from "./types";
 export const en: Dictionary = {
   nav: {
     hotels: "Hotels",
-    offers: "Offers",
-    experiences: "Experiences",
+    gallery: "Gallery",
+    amenities: "Amenities",
     about: "About",
     contact: "Contact",
     manageBooking: "Manage Booking",
@@ -20,12 +20,14 @@ export const en: Dictionary = {
     whyKicker: "Why book direct",
     whyTitle: "The direct-booking difference",
     featuredRoomsTitle: "Featured rooms",
-    experiencesTitle: "Experiences",
-    offersTitle: "Current offers",
+    galleryTitle: "Gallery",
+    gallerySubtitle: "Moments at Zarina Hotels & Hamam",
+    amenitiesTitle: "Hotel amenities",
+    amenitiesSubtitle: "What you get at Zarina Hotels & Hamam",
     georgiaTitle: "Georgia, up close",
     georgiaBody: "Viniculture older than the pyramids, supra tables that run for hours, mountains that meet the sea. Our team will point you to the Batumi the locals love.",
     newsletterTitle: "Join the Zarina letter",
-    newsletterBody: "Seasonal offers and Georgia travel notes. No spam — unsubscribe anytime.",
+    newsletterBody: "Seasonal updates and Georgia travel notes. No spam — unsubscribe anytime.",
   },
   booking: {
     destination: "Destination or hotel",

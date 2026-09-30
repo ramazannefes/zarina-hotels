@@ -1,8 +1,8 @@
 export type Dictionary = {
   nav: {
     hotels: string;
-    offers: string;
-    experiences: string;
+    gallery: string;
+    amenities: string;
     about: string;
     contact: string;
     manageBooking: string;
@@ -18,8 +18,10 @@ export type Dictionary = {
     whyKicker: string;
     whyTitle: string;
     featuredRoomsTitle: string;
-    experiencesTitle: string;
-    offersTitle: string;
+    galleryTitle: string;
+    gallerySubtitle: string;
+    amenitiesTitle: string;
+    amenitiesSubtitle: string;
     georgiaTitle: string;
     georgiaBody: string;
     newsletterTitle: string;

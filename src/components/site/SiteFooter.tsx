@@ -13,10 +13,10 @@ export default function SiteFooter({ locale, dict }: { locale: Locale; dict: Dic
   ];
   const company = [
     { href: `/${locale}/about`, label: dict.nav.about },
+    { href: `/${locale}/gallery`, label: dict.nav.gallery },
+    { href: `/${locale}/amenities`, label: dict.nav.amenities },
     { href: `/${locale}/contact`, label: dict.nav.contact },
     { href: `/${locale}/faq`, label: "FAQ" },
-    { href: `/${locale}/journal`, label: "Journal" },
-    { href: `/${locale}/gallery`, label: "Gallery" },
   ];
 
   return (
@@ -29,7 +29,7 @@ export default function SiteFooter({ locale, dict }: { locale: Locale; dict: Dic
           </div>
           <p className="mt-1 text-[10px] font-semibold uppercase tracking-widest2 text-ink-muted">Hotels · All in Georgia</p>
           <address className="mt-4 text-sm not-italic leading-6 text-ink-soft">
-            Tsminda Severiani Adjareli St 11, Batumi 6000, Georgia
+            Mayakovsky Street 11, Batumi 6010, Georgia
             <br />
             <a href="tel:+995511249292" className="font-medium text-gold-600 hover:underline">+995 511 24 92 92</a>
           </address>
@@ -38,7 +38,7 @@ export default function SiteFooter({ locale, dict }: { locale: Locale; dict: Dic
         <nav aria-label="Properties and company">
           <h3 className="text-xs font-bold uppercase tracking-widest2 text-ink">{dict.footer.properties}</h3>
           <ul className="mt-3 space-y-2 text-sm">
-            <li><Link href={`/${locale}/hotels/zarina-batumi`} className="text-ink-soft hover:text-gold-600 hover:underline">Zarina Hotels Batumi</Link></li>
+            <li><Link href={`/${locale}/hotels/zarina-batumi`} className="text-ink-soft hover:text-gold-600 hover:underline">Zarina Hotels &amp; Hamam</Link></li>
           </ul>
           <h3 className="mt-6 text-xs font-bold uppercase tracking-widest2 text-ink">{dict.footer.company}</h3>
           <ul className="mt-3 space-y-2 text-sm">
@@ -58,7 +58,7 @@ export default function SiteFooter({ locale, dict }: { locale: Locale; dict: Dic
         </nav>
         <div>
           <h3 className="text-xs font-bold uppercase tracking-widest2 text-ink">{dict.footer.newsletter}</h3>
-          <p className="mt-3 text-sm text-ink-soft">Seasonal offers and Georgia travel notes.</p>
+          <p className="mt-3 text-sm text-ink-soft">Seasonal updates and Georgia travel notes.</p>
           <form action={`/${locale}/newsletter/subscribed`} method="get" className="mt-4 flex gap-2">
             <label htmlFor="nl-email" className="sr-only">Email</label>
             <input id="nl-email" name="email" type="email" required placeholder={dict.footer.emailPlaceholder}

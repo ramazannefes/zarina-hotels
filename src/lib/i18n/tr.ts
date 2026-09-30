@@ -3,8 +3,8 @@ import type { Dictionary } from "./types";
 export const tr: Dictionary = {
   nav: {
     hotels: "Oteller",
-    offers: "Fırsatlar",
-    experiences: "Deneyimler",
+    gallery: "Galeri",
+    amenities: "Olanaklar",
     about: "Hakkımızda",
     contact: "İletişim",
     manageBooking: "Rezervasyonumu Yönet",
@@ -20,12 +20,14 @@ export const tr: Dictionary = {
     whyKicker: "Neden doğrudan rezervasyon?",
     whyTitle: "Doğrudan rezervasyonun farkı",
     featuredRoomsTitle: "Öne çıkan odalar",
-    experiencesTitle: "Deneyimler",
-    offersTitle: "Güncel fırsatlar",
+    galleryTitle: "Galeri",
+    gallerySubtitle: "Zarina Hotels & Hamam'daki anlar",
+    amenitiesTitle: "Otel olanakları",
+    amenitiesSubtitle: "Zarina Hotels & Hamam'da ne var?",
     georgiaTitle: "Gürcistan'a yakından bakın",
     georgiaBody: "Piramitlerden daha eski bağcılık, saatler süren sofralar, denizle buluşan dağlar. Ekibimiz size Batum'un yerlilerin sevdiği yüzünü gösterir.",
     newsletterTitle: "Zarina bültenine katılın",
-    newsletterBody: "Sezonluk fırsatlar ve Gürcistan seyahat notları. İstediğinizde ayrılabilirsiniz.",
+    newsletterBody: "Sezonluk güncellemeler ve Gürcistan seyahat notları. İstediğinizde ayrılabilirsiniz.",
   },
   booking: {
     destination: "Destinasyon veya otel",

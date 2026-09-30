@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001";
 
   const staticPaths = [
-    "", "/hotels", "/offers", "/experiences", "/about", "/contact", "/manage-booking",
+    "", "/hotels", "/gallery", "/amenities", "/about", "/contact", "/manage-booking",
     "/privacy", "/cookies", "/terms", "/booking-terms", "/cancellation-policy",
   ];
 
@@ -30,10 +30,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       for (const locale of locales) {
         entries.push({ url: `${siteUrl}/${locale}/hotels/${hotel.slug}`, lastModified: hotel.updatedAt, priority: 0.9 });
       }
-    }
-    const offers = await db.offer.findMany({ where: { isActive: true }, select: { slug: true, locale: true } });
-    for (const offer of offers) {
-      entries.push({ url: `${siteUrl}/${offer.locale}/offers/${offer.slug}`, priority: 0.6 });
     }
   } catch {
     // DB unavailable during build — static routes still ship

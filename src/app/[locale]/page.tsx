@@ -6,6 +6,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
 import BookingWidget from "@/components/site/BookingWidget";
+import GalleryPreview from "@/components/site/GalleryPreview";
 import type { Metadata } from "next";
 
 export const revalidate = 300;
@@ -42,14 +43,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   });
 
   const featuredRooms = hotels.flatMap((h) => h.rooms.map((r) => ({ hotel: h, room: r }))).slice(0, 3);
-
-  const experiences = await db.hotelExperience.findMany({
-    where: { isActive: true, locale },
-    orderBy: { sortOrder: "asc" },
-    take: 6,
-  });
-
-  const offers = await db.offer.findMany({ where: { isActive: true, locale }, take: 3, orderBy: { sortOrder: "asc" } });
 
   const hotelOptions = hotels.map((h) => ({ id: h.id, name: h.translations[0]?.name ?? h.name, city: h.city }));
 
@@ -213,48 +206,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       )}
 
-      {/* EXPERIENCES */}
-      {experiences.length > 0 && (
-        <section className="bg-ink section-pad text-cream" aria-labelledby="exp-title">
-          <div className="mx-auto max-w-7xl">
-            <div className="reveal">
-              <p className="kicker !text-gold-300">{dict.home.experiencesTitle}</p>
-              <h2 id="exp-title" className="section-title mt-2">{dict.home.experiencesTitle}</h2>
-            </div>
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {experiences.map((e, i) => (
-                <article key={e.id} className="reveal border border-ink-soft/60 bg-ink-soft/30 p-6 transition-colors duration-500 hover:border-gold-300/50" style={{ "--reveal-delay": `${i * 100}ms` } as React.CSSProperties}>
-                  <h3 className="font-display text-xl text-gold-300">{e.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-sand-100/75">{e.description}</p>
-                </article>
-              ))}
-            </div>
+      {/* GALLERY PREVIEW */}
+      <section className="bg-ink section-pad text-cream" aria-labelledby="gallery-title">
+        <div className="mx-auto max-w-7xl">
+          <div className="reveal">
+            <p className="kicker !text-gold-300">Zarina Hotels &amp; Hamam</p>
+            <h2 id="gallery-title" className="section-title mt-2">{dict.home.galleryTitle}</h2>
+            <p className="mt-3 max-w-xl text-sm text-sand-100/70">{dict.home.gallerySubtitle}</p>
           </div>
-        </section>
-      )}
-
-      {/* OFFERS */}
-      {offers.length > 0 && (
-        <section className="section-pad" aria-labelledby="offers-title">
-          <div className="mx-auto max-w-7xl">
-            <div className="reveal">
-              <p className="kicker">{dict.home.offersTitle}</p>
-              <h2 id="offers-title" className="section-title mt-2">{dict.home.offersTitle}</h2>
-            </div>
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-              {offers.map((o, i) => (
-                <article key={o.id} className="reveal card-hover card p-6" style={{ "--reveal-delay": `${i * 100}ms` } as React.CSSProperties}>
-                  {o.isDemo && <span className="badge-demo">{dict.common.demoData}</span>}
-                  <h3 className="mt-2 font-display text-xl">{o.title}</h3>
-                  <p className="mt-2 text-sm text-ink-muted">{o.summary}</p>
-                  {o.discountPercent && <p className="mt-3 font-display text-2xl text-wine-600">−{o.discountPercent}%</p>}
-                  <Link href={`/${locale}/offers/${o.slug}`} className="btn-ghost mt-4 !px-4 !py-2 text-xs">{dict.common.viewHotel}</Link>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+          <GalleryPreview locale={locale} />
+        </div>
+      </section>
 
       {/* GEORGIA */}
       <section className="border-t border-sand-200 bg-sand-50 section-pad" aria-labelledby="georgia-title">

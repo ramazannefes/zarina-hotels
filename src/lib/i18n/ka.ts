@@ -3,8 +3,8 @@ import type { Dictionary } from "./types";
 export const ka: Dictionary = {
   nav: {
     hotels: "სასტუმროები",
-    offers: "შეთავაზებები",
-    experiences: "გამოცდილებები",
+    gallery: "გალერეა",
+    amenities: "მოვსახურები",
     about: "ჩვენ შესახებ",
     contact: "კონტაქტი",
     manageBooking: "ჯავშნის მართვა",
@@ -20,12 +20,14 @@ export const ka: Dictionary = {
     whyKicker: "პირდაპირი ჯავშანი",
     whyTitle: "პირდაპირი ჯავშნის უპირატესობა",
     featuredRoomsTitle: "რჩეული ოთახები",
-    experiencesTitle: "გამოცდილებები",
-    offersTitle: "მიმდინარე შეთავაზებები",
+    galleryTitle: "გალერეა",
+    gallerySubtitle: "Zarina Hotels & Hamam-ში მომენტები",
+    amenitiesTitle: "სასტუმროს მოვსახურება",
+    amenitiesSubtitle: "რას იძლევა Zarina Hotels & Hamam?",
     georgiaTitle: "საქართველო ახლოდან",
     georgiaBody: "პირამიდებზე უფრო ძველი მეღვინეობა, საუკუნოვანი სუფრა, მთები და ზღვა. ჩვენი გუნდი გიჩვენებთ ბათუმს, რომელსაც ადგილობრივები ირჩევენ.",
     newsletterTitle: "შემოგვიერთდით",
-    newsletterBody: "სეზონური შეთავაზებები და საქართველოს მოგზაურობის ჩანაწერები.",
+    newsletterBody: "სეზონური განახლებები და საქართველოს მოგზაურობის ჩანაწერები.",
   },
   booking: {
     destination: "მიმართულება ან სასტუმრო",
