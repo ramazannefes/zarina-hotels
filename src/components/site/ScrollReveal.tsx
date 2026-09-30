@@ -7,8 +7,11 @@
  * `reveal-zoom`) animates in when it enters the viewport. Stagger children
  * by setting `style={{ "--reveal-delay": "120ms" }}` on the element.
  *
- * Respects prefers-reduced-motion (CSS keeps content visible), and disables
- * itself entirely for browsers without IntersectionObserver.
+ * Progressive enhancement: CSS only hides `.reveal` elements when the root
+ * <html> has the `js-reveal` class — which this component adds on mount.
+ * If JavaScript never runs (extensions, blocked scripts, crawlers), content
+ * stays fully visible. Respects prefers-reduced-motion and disables itself
+ * for browsers without IntersectionObserver.
  */
 
 import { useEffect } from "react";
@@ -16,10 +19,12 @@ import { useEffect } from "react";
 export default function ScrollReveal() {
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!("IntersectionObserver" in window)) {
-      document.querySelectorAll<HTMLElement>(".reveal").forEach((el) => el.classList.add("is-visible"));
-      return;
-    }
+    if (!("IntersectionObserver" in window)) return; // CSS never hides anything
+
+    const root = document.documentElement;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; // CSS keeps content visible
+
+    root.classList.add("js-reveal");
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -33,17 +38,18 @@ export default function ScrollReveal() {
       { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
     );
 
-    const nodes = document.querySelectorAll<HTMLElement>(".reveal:not(.is-visible)");
-    nodes.forEach((el) => observer.observe(el));
-
-    // Re-scan briefly after route content settles (Next.js lazy sections).
-    const rescan = window.setTimeout(() => {
+    const scan = () => {
       document.querySelectorAll<HTMLElement>(".reveal:not(.is-visible)").forEach((el) => observer.observe(el));
-    }, 1200);
+    };
+
+    scan();
+    // Re-scan briefly after route content settles (Next.js lazy sections).
+    const rescan = window.setTimeout(scan, 1200);
 
     return () => {
       window.clearTimeout(rescan);
       observer.disconnect();
+      root.classList.remove("js-reveal");
     };
   }, []);
 

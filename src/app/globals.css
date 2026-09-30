@@ -36,8 +36,12 @@ body {
   color: #102550;
 }
 
-/* ── Scroll-reveal primitives (IntersectionObserver toggles .is-visible) ── */
-.reveal {
+/* ── Scroll-reveal primitives ───────────────────────────────────────────────
+   Progressive enhancement: content is VISIBLE by default. The `js-reveal`
+   class (added to <html> by ScrollReveal) arms the animation — so if
+   JavaScript is blocked/slow (extensions,爬 crawlers, e-reader mode),
+   everything still renders. JS adds .is-visible when elements enter view. */
+.js-reveal .reveal {
   opacity: 0;
   transform: translateY(28px);
   transition:
@@ -46,10 +50,10 @@ body {
   transition-delay: var(--reveal-delay, 0ms);
   will-change: opacity, transform;
 }
-.reveal-left { transform: translateX(-32px); }
-.reveal-right { transform: translateX(32px); }
-.reveal-zoom { transform: scale(0.95); }
-.reveal.is-visible {
+.js-reveal .reveal-left { transform: translateX(-32px); }
+.js-reveal .reveal-right { transform: translateX(32px); }
+.js-reveal .reveal-zoom { transform: scale(0.95); }
+.js-reveal .reveal.is-visible {
   opacity: 1;
   transform: none;
 }
@@ -58,12 +62,15 @@ body {
 .reveal-line {
   background-image: linear-gradient(90deg, #3d9bf5, #0a66c2);
   background-repeat: no-repeat;
-  background-size: 0% 3px;
+  background-size: 100% 3px;
   background-position: left bottom;
+}
+.js-reveal .reveal-line {
+  background-size: 0% 3px;
   transition: background-size 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
 }
-.reveal.is-visible .reveal-line,
-.is-visible.reveal-line {
+.js-reveal .reveal.is-visible .reveal-line,
+.js-reveal .is-visible.reveal-line {
   background-size: 100% 3px;
 }
 
