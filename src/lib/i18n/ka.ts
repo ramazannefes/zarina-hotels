@@ -5,6 +5,7 @@ export const ka: Dictionary = {
     hotels: "სასტუმროები",
     gallery: "გალერეა",
     amenities: "მოვსახურები",
+    faq: "კითხვები",
     about: "ჩვენ შესახებ",
     contact: "კონტაქტი",
     manageBooking: "ჯავშნის მართვა",

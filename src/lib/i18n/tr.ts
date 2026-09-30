@@ -5,6 +5,7 @@ export const tr: Dictionary = {
     hotels: "Oteller",
     gallery: "Galeri",
     amenities: "Olanaklar",
+    faq: "SSS",
     about: "Hakkımızda",
     contact: "İletişim",
     manageBooking: "Rezervasyonumu Yönet",

@@ -5,6 +5,7 @@ export const en: Dictionary = {
     hotels: "Hotels",
     gallery: "Gallery",
     amenities: "Amenities",
+    faq: "FAQ",
     about: "About",
     contact: "Contact",
     manageBooking: "Manage Booking",

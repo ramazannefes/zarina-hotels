@@ -16,7 +16,7 @@ export default function SiteFooter({ locale, dict }: { locale: Locale; dict: Dic
     { href: `/${locale}/gallery`, label: dict.nav.gallery },
     { href: `/${locale}/amenities`, label: dict.nav.amenities },
     { href: `/${locale}/contact`, label: dict.nav.contact },
-    { href: `/${locale}/faq`, label: "FAQ" },
+    { href: `/${locale}/faq`, label: dict.nav.faq },
   ];
 
   return (

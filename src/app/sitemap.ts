@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001";
 
   const staticPaths = [
-    "", "/hotels", "/gallery", "/amenities", "/about", "/contact", "/manage-booking",
+    "", "/hotels", "/gallery", "/amenities", "/faq", "/about", "/contact", "/manage-booking",
     "/privacy", "/cookies", "/terms", "/booking-terms", "/cancellation-policy",
   ];
 

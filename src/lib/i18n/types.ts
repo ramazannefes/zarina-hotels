@@ -3,6 +3,7 @@ export type Dictionary = {
     hotels: string;
     gallery: string;
     amenities: string;
+    faq: string;
     about: string;
     contact: string;
     manageBooking: string;

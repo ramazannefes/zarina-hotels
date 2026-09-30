@@ -19,6 +19,7 @@ export default function SiteHeader({ locale, dict }: { locale: Locale; dict: Dic
     { href: `/${locale}/hotels`, label: dict.nav.hotels },
     { href: `/${locale}/gallery`, label: dict.nav.gallery },
     { href: `/${locale}/amenities`, label: dict.nav.amenities },
+    { href: `/${locale}/faq`, label: dict.nav.faq },
     { href: `/${locale}/about`, label: dict.nav.about },
     { href: `/${locale}/contact`, label: dict.nav.contact },
   ];
