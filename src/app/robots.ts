@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001";
+  const siteUrl = (
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://zarina-hotels.vercel.app"
+  ).replace(/\/$/, "");
   return {
     rules: [
       {

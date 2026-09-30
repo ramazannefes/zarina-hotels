@@ -58,6 +58,7 @@ export default async function HotelDetailPage({ params }: Props) {
       addressCountry: "GE",
     },
     ...(hotel.latitude && hotel.longitude ? { geo: { "@type": "GeoCoordinates", latitude: hotel.latitude, longitude: hotel.longitude } } : {}),
+    ...(hotel.mapEmbedUrl ? { hasMap: hotel.mapEmbedUrl } : {}),
     checkinTime: "14:00",
     checkoutTime: "12:00",
     ...(hotel.airportKm ? { amenityFeature: [{ "@type": "LocationFeatureSpecification", name: "Airport shuttle" }] } : {}),
@@ -205,7 +206,27 @@ export default async function HotelDetailPage({ params }: Props) {
             <address className="mt-4 not-italic leading-7 text-ink-soft">
               {hotel.address}<br />{hotel.city}, Georgia
             </address>
-            {hotel.phone && <p className="mt-2"><a href={`tel:${hotel.phone.replace(/\s/g, "")}`} className="link-underline">{hotel.phone}</a></p>}
+            {hotel.latitude && hotel.longitude && (
+              <p className="mt-2 text-xs text-ink-muted">
+                {hotel.latitude.toFixed(4)}° N, {hotel.longitude.toFixed(4)}° E
+              </p>
+            )}
+            <div className="mt-4 flex flex-wrap gap-3">
+              {hotel.latitude && hotel.longitude && (
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${hotel.latitude},${hotel.longitude}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-ghost !px-4 !py-2 text-xs"
+                >
+                  Google Maps'te aç
+                </a>
+              )}
+              <Link href={`/${locale}/booking/search?hotel=${hotel.id}`} className="btn-primary !px-4 !py-2 text-xs">
+                {dict.common.bookNow}
+              </Link>
+            </div>
+            {hotel.phone && <p className="mt-4"><a href={`tel:${hotel.phone.replace(/\s/g, "")}`} className="link-underline">{hotel.phone}</a></p>}
             {hotel.email && <p className="mt-1"><a href={`mailto:${hotel.email}`} className="link-underline">{hotel.email}</a></p>}
           </div>
           <div className="reveal reveal-right min-h-[300px] border border-sand-200 bg-white">
