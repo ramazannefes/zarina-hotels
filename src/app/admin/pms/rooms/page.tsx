@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { getSessionAdmin } from "@/lib/auth/session";
 import { hasPermission } from "@/lib/auth/permissions";
 import { num } from "@/lib/pricing";
+import type { HousekeepingStatus, PhysicalRoomStatus } from "@prisma/client";
 import {
   ROOM_STATUS_LABELS,
   ROOM_STATUS_CLASSES,
@@ -19,6 +20,17 @@ type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
+// Whitelisted enum values — raw search params are never cast blindly into Prisma enums
+const HOUSEKEEPING_VALUES = ["CLEAN", "DIRTY", "IN_PROGRESS", "CLEANING_PENDING", "INSPECTION_PENDING"] as const;
+const ROOM_STATUS_VALUES = ["FREE", "RESERVED", "OCCUPIED", "AWAITING_CHECKIN", "AWAITING_CHECKOUT", "MAINTENANCE", "BLOCKED"] as const;
+
+function parseHkFilter(value: string): { not: HousekeepingStatus } | HousekeepingStatus | null {
+  if ((HOUSEKEEPING_VALUES as readonly string[]).includes(value)) return value as HousekeepingStatus;
+  // "1"/"true" (dashboard Temizlik kartı): temizliği bekleyen tüm odalar
+  if (value === "1" || value === "true") return { not: "CLEAN" };
+  return null;
+}
+
 export default async function PmsRoomsPage({ searchParams }: Props) {
   const admin = await getSessionAdmin();
   if (!admin) redirect("/admin/login");
@@ -27,8 +39,8 @@ export default async function PmsRoomsPage({ searchParams }: Props) {
   const sp = await searchParams;
   const q = typeof sp.q === "string" ? sp.q.trim() : "";
   const floor = typeof sp.floor === "string" ? parseInt(sp.floor, 10) : undefined;
-  const status = typeof sp.status === "string" ? sp.status : "";
-  const hk = typeof sp.hk === "string" ? sp.hk : "";
+  const status = typeof sp.status === "string" && (ROOM_STATUS_VALUES as readonly string[]).includes(sp.status) ? (sp.status as PhysicalRoomStatus) : null;
+  const hk = typeof sp.hk === "string" ? parseHkFilter(sp.hk) : null;
   const selectedRoomId = typeof sp.room === "string" ? sp.room : "";
 
   const today = utcToday();
@@ -45,8 +57,8 @@ export default async function PmsRoomsPage({ searchParams }: Props) {
     where: {
       ...(q ? { number: { contains: q } } : {}),
       ...(floor !== undefined && !Number.isNaN(floor) ? { floor } : {}),
-      ...(status ? { status: status as never } : {}),
-      ...(hk ? { housekeeping: hk as never } : {}),
+      ...(status ? { status } : {}),
+      ...(hk ? { housekeeping: hk } : {}),
     },
     include: {
       hotel: { select: { id: true, name: true } },
