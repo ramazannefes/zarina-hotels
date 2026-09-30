@@ -142,6 +142,8 @@ export async function performCheckIn(params: {
     metadata: { pms: "CHECK_IN", roomId: roomId ?? null },
     ip,
   });
+  const { notifyAdmins } = await import("@/lib/notify");
+  await notifyAdmins({ kind: "operation", title: "Check-in yapıldı", body: `Rezervasyon #${bookingId.slice(-6)} konaklamaya başladı.`, link: `/admin/pms/reservations/${bookingId}`, bookingId });
   return { ok: true };
 }
 
@@ -171,15 +173,17 @@ export async function performCheckOut(params: {
         where: { id: assignment.roomId },
         data: { status: "FREE", housekeeping: "DIRTY" },
       });
-      await tx.housekeepingTask.create({
-        data: {
-          roomId: assignment.roomId,
-          bookingId: booking.id,
-          type: "CLEANUP",
-          status: "PENDING",
-          note: "Check-out sonrası otomatik temizlik görevi",
-        },
-      });
+    await tx.housekeepingTask.create({
+      data: {
+        roomId: assignment.roomId,
+        bookingId: booking.id,
+        type: "CLEANUP",
+        status: "PENDING",
+        note: "Check-out sonrası otomatik temizlik görevi",
+      },
+    });
+    const { notifyAdmins } = await import("@/lib/notify");
+    await notifyAdmins({ kind: "operation", title: "Temizlik görevi oluştu", body: `Oda #${assignment.roomId.slice(-4)} temizlenmeyi bekliyor.`, link: "/admin/pms/rooms?hk=1", bookingId });
     }
 
     await tx.booking.update({
@@ -196,6 +200,8 @@ export async function performCheckOut(params: {
     metadata: { pms: "CHECK_OUT" },
     ip,
   });
+  const { notifyAdmins } = await import("@/lib/notify");
+  await notifyAdmins({ kind: "operation", title: "Check-out yapıldı", body: `Rezervasyon #${bookingId.slice(-6)} tamamlandı. Oda temizlik listesine eklendi.`, link: `/admin/pms/reservations/${bookingId}`, bookingId });
   return { ok: true };
 }
 
@@ -310,6 +316,8 @@ export async function createPmsReservation(
     metadata: { pms: true, reference, roomId: input.roomId, checkIn: input.checkIn, checkOut: input.checkOut },
     ip,
   });
+  const { notifyAdmins } = await import("@/lib/notify");
+  await notifyAdmins({ kind: "reservation", title: `Yeni PMS rezervasyonu: ${reference}`, body: `${input.profile.firstName} ${input.profile.lastName} · ${input.checkIn} → ${input.checkOut}`, link: `/admin/pms/reservations/${bookingId}`, hotelId: input.hotelId, bookingId });
   return { bookingId, reference };
 }
 
@@ -359,6 +367,8 @@ export async function cancelPmsReservation(params: {
     metadata: { pms: true },
     ip,
   });
+  const { notifyAdmins } = await import("@/lib/notify");
+  await notifyAdmins({ kind: "operation", title: "Rezervasyon iptal edildi", body: `#${bookingId.slice(-6)} iptal edildi, oda serbest bırakıldı.`, link: `/admin/pms/reservations/${bookingId}`, bookingId });
   return { ok: true };
 }
 
@@ -546,6 +556,8 @@ export async function addManualPayment(params: {
     metadata: { bookingId, amount, method, balanceAfter: result.balance },
     ip,
   });
+  const { notifyAdmins } = await import("@/lib/notify");
+  await notifyAdmins({ kind: "payment", title: `Ödeme tahsil edildi: ${amount} ₾`, body: `#${bookingId.slice(-6)} · kalan: ${result.balance} ₾`, link: `/admin/pms/reservations/${bookingId}`, bookingId });
   return { ok: true, ...result };
 }
 

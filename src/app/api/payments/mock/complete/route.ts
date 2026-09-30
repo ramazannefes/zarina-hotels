@@ -81,6 +81,15 @@ export async function POST(req: NextRequest) {
       if (adminEmail) {
         await sendEmail({ to: adminEmail, template: "admin_new_booking", subject: adminTpl.subject, html: adminTpl.html, bookingId: fresh.id });
       }
+      const { notifyAdmins } = await import("@/lib/notify");
+      await notifyAdmins({
+        kind: "reservation",
+        title: `Yeni online rezervasyon: ${fresh.reference}`,
+        body: `${fresh.guest.firstName} ${fresh.guest.lastName} · ${fresh.hotel.name} · ${emailData.total}`,
+        link: "/admin/reservations",
+        hotelId: fresh.hotelId,
+        bookingId: fresh.id,
+      });
     }
   }
 

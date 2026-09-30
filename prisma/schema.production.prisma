@@ -911,6 +911,22 @@ model RoomStatusLog {
   @@index([createdAt])
 }
 
+// Panel bildirimleri — rezervasyon/ödeme/operasyon olayları admin zilinde görünür.
+model AdminNotification {
+  id        String     @id @default(cuid())
+  kind      String // reservation | payment | operation | message | system
+  title     String
+  body      String?
+  link      String? // relative admin URL
+  hotelId   String?
+  bookingId String?
+  readAt    DateTime?
+  createdAt DateTime   @default(now())
+
+  @@index([readAt, createdAt])
+  @@index([kind])
+}
+
 // Reusable PMS guest profile (walk-in / phone guests without an online booking).
 model GuestProfile {
   id          String    @id @default(cuid())

@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { TR_MENU, TR_COMMON } from "@/lib/admin-i18n";
+import NotificationBell from "./NotificationBell";
 
-type Props = { role: string; roleLabel: string; name: string };
+type Props = { role: string; roleLabel: string; name: string; unreadNotifications: number };
 
-export default function AdminSidebar({ role, roleLabel, name }: Props) {
+export default function AdminSidebar({ role, roleLabel, name, unreadNotifications }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -43,13 +44,6 @@ export default function AdminSidebar({ role, roleLabel, name }: Props) {
     </nav>
   );
 
-  const brand = (
-    <div className="border-b border-ink-soft/60 px-5 py-5">
-      <p className="font-display text-xl">ZARINA</p>
-      <p className="text-[9px] uppercase tracking-widest2 text-gold-300">Yönetim Paneli</p>
-    </div>
-  );
-
   const userBox = (
     <div className="border-t border-ink-soft/60 p-4 text-xs">
       <p className="font-medium text-cream">{name}</p>
@@ -65,7 +59,13 @@ export default function AdminSidebar({ role, roleLabel, name }: Props) {
     <>
       {/* Masaüstü sidebar */}
       <aside className="flex w-60 shrink-0 flex-col border-r border-sand-200 bg-ink text-sand-100 max-lg:hidden">
-        {brand}
+        <div className="flex items-center justify-between border-b border-ink-soft/60 px-5 py-4">
+          <div>
+            <p className="font-display text-xl">ZARINA</p>
+            <p className="text-[9px] uppercase tracking-widest2 text-gold-300">Yönetim Paneli</p>
+          </div>
+          <NotificationBell initialUnread={unreadNotifications} />
+        </div>
         {navList}
         {userBox}
       </aside>
@@ -76,15 +76,18 @@ export default function AdminSidebar({ role, roleLabel, name }: Props) {
           <p className="font-display text-lg">ZARINA</p>
           <span className="text-[9px] uppercase tracking-widest2 text-gold-300">Yönetim</span>
         </div>
-        <button
-          type="button"
-          onClick={() => setMobileOpen(true)}
-          className="flex items-center gap-1.5 rounded border border-ink-soft px-3 py-1.5 text-xs text-sand-200/80 hover:border-gold-300 hover:text-gold-300"
-          aria-label="Menüyü aç"
-          aria-expanded={mobileOpen}
-        >
-          <span aria-hidden>☰</span> Menü
-        </button>
+        <div className="flex items-center gap-1">
+          <NotificationBell initialUnread={unreadNotifications} />
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            className="flex items-center gap-1.5 rounded border border-ink-soft px-3 py-1.5 text-xs text-sand-200/80 hover:border-gold-300 hover:text-gold-300"
+            aria-label="Menüyü aç"
+            aria-expanded={mobileOpen}
+          >
+            <span aria-hidden>☰</span> Menü
+          </button>
+        </div>
       </header>
 
       {/* Mobil drawer */}

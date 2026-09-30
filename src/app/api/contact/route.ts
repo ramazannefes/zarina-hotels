@@ -50,5 +50,12 @@ export async function POST(req: NextRequest) {
   await db.contactMessage.create({
     data: { ...parsed.data, ip },
   });
+  const { notifyAdmins } = await import("@/lib/notify");
+  await notifyAdmins({
+    kind: "message",
+    title: `Yeni iletişim mesajı: ${parsed.data.subject}`,
+    body: `${parsed.data.name} · ${parsed.data.email}`,
+    link: "/admin/messages",
+  });
   return NextResponse.json({ ok: true }, { status: 201 });
 }
